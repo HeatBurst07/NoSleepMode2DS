@@ -1,24 +1,21 @@
-include $(DEVKITPRO)/libctru/3ds_rules
+CC = /opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc
+CFLAGS = -O2 -Wall -mword-relocations -mtls-dialect=2 -I/opt/devkitpro/libctru/include -DARM11
+LDFLAGS = -specs=3dsx.specs -L/opt/devkitpro/libctru/lib -lctru -lm
 
-TARGET := nosleep
-BUILD := build
-SOURCE := source
-DATA := data
-INCLUDE := include
-LIBS := 
+TARGET = nosleep
+SRC = source/main.c
+OBJ = $(SRC:.c=.o)
 
-.PHONY: all clean
+all: $(TARGET).3dsx
 
-all:
-	@$(MAKE) -C $(BUILD) -f ../Makefile
-
-clean:
-	rm -rf $(BUILD) $(TARGET).3dsx $(TARGET).elf
-
-$(BUILD)/main.o: source/main.c
-	mkdir -p $(BUILD)
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(TARGET).3dsx: $(BUILD)/main.o
-	$(LINK) $(LDFLAGS) -o $(TARGET).elf $^ $(LIBS)
-	3dsxtool $(TARGET).elf $(TARGET).3dsx --smdh=nosleep.smdh
+$(TARGET).elf: $(OBJ)
+	$(CC) $(OBJ) $(LDFLAGS) -o $@
+
+$(TARGET).3dsx: $(TARGET).elf
+	3dsxtool $< $@ --smdh=nosleep.smdh
+
+clean:
+	rm -f $(OBJ) $(TARGET).elf $(TARGET).3dsx
