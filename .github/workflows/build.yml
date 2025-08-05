@@ -1,0 +1,30 @@
+name: Build 3DSX
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: devkitpro/devkitarm
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up environment
+        run: |
+          echo "DEVKITPRO=/opt/devkitpro" >> $GITHUB_ENV
+          echo "DEVKITARM=/opt/devkitpro/devkitARM" >> $GITHUB_ENV
+
+      - name: Build .3dsx
+        run: make
+
+      - name: Upload .3dsx
+        uses: actions/upload-artifact@v3
+        with:
+          name: nosleep.3dsx
+          path: nosleep.3dsx
