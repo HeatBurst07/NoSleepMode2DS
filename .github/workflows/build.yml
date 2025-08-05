@@ -8,21 +8,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: devkitpro/devkitarm
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up environment
+      - name: Install devkitARM + libctru
         run: |
+          sudo apt-get update
+          sudo apt-get install -y git build-essential libarchive-dev
+          wget https://apt.devkitpro.org/install-devkitpro-pacman -O install-pacman
+          chmod +x install-pacman
+          sudo ./install-pacman
+
+          echo "PATH=/opt/devkitpro/devkitARM/bin:$PATH" >> $GITHUB_ENV
           echo "DEVKITPRO=/opt/devkitpro" >> $GITHUB_ENV
           echo "DEVKITARM=/opt/devkitpro/devkitARM" >> $GITHUB_ENV
 
-      - name: Install libctru
-        run: |
-          dkp-pacman -Sy --noconfirm libctru
+          sudo dkp-pacman -Sy --noconfirm
+          sudo dkp-pacman -S --noconfirm devkitARM libctru
 
       - name: Build .3dsx
         run: make
