@@ -20,6 +20,10 @@ jobs:
           echo "DEVKITPRO=/opt/devkitpro" >> $GITHUB_ENV
           echo "DEVKITARM=/opt/devkitpro/devkitARM" >> $GITHUB_ENV
 
+      - name: Install libctru
+        run: |
+          dkp-pacman -Sy --noconfirm libctru
+
       - name: Build .3dsx
         run: make
 
