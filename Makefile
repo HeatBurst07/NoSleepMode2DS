@@ -15,7 +15,7 @@ $(TARGET).elf: $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) -o $@
 
 $(TARGET).3dsx: $(TARGET).elf
-	3dsxtool $< $@ --smdh=nosleep.smdh
+	3dsxtool $< $@ 
 
 clean:
 	rm -f $(OBJ) $(TARGET).elf $(TARGET).3dsx
